@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roda Obrolan — Pemantik Obrolan Seru &amp; Tanpa Canggung</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Header -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-logo" aria-hidden="true">
+          <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="18" cy="18" r="16" fill="#E05D44" />
+            <path d="M18 2A16 16 0 0 1 34 18H18V2Z" fill="#F4A261" />
+            <path d="M18 18H34A16 16 0 0 1 18 34V18Z" fill="#2A9D8F" />
+            <path d="M18 18V34A16 16 0 0 1 2 18H18Z" fill="#E9C46A" />
+            <circle cx="18" cy="18" r="5" fill="#FAF8F5" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">Roda Obrolan</h1>
+          <p class="brand-subtitle">Putar roda, temukan pemantik obrolan tanpa canggung</p>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <button
+          id="soundToggleBtn"
+          class="icon-btn"
+          type="button"
+          aria-label="Matikan atau nyalakan suara"
+          title="Suara efek (Aktif)"
+        >
+          <span class="btn-icon" id="soundIconOn" aria-hidden="true">🔊</span>
+          <span class="btn-icon hidden" id="soundIconOff" aria-hidden="true">🔇</span>
+          <span class="btn-label hide-sm" id="soundLabel">Suara Aktif</span>
+        </button>
+
+        <button
+          id="openSavedBtn"
+          class="icon-btn"
+          type="button"
+          aria-label="Buka Favorit dan Riwayat"
+        >
+          <span class="btn-icon" aria-hidden="true">🔖</span>
+          <span class="btn-label hide-sm">Favorit &amp; Riwayat</span>
+          <span id="savedCountBadge" class="badge hidden">0</span>
+        </button>
+
+        <button
+          id="openManageBtn"
+          class="btn-secondary"
+          type="button"
+        >
+          <span aria-hidden="true">⚙️</span>
+          <span>Kelola Topik</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Category Filter -->
+    <nav class="category-bar" aria-label="Filter Kategori Topik">
+      <div class="category-pills" id="categoryPills" role="tablist">
+        <!-- Populated by JS -->
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-grid">
+      <!-- Left: Wheel Section -->
+      <section class="wheel-section" aria-label="Roda Putar Topik">
+        <div class="wheel-stage">
+          <div class="wheel-pointer" id="wheelPointer" aria-hidden="true">
+            <svg width="36" height="42" viewBox="0 0 36 42" fill="none">
+              <path
+                d="M18 40L3 10C1.5 6.5 4 2 8 2H28C32 2 34.5 6.5 33 10L18 40Z"
+                fill="#1E293B"
+                stroke="#FAF8F5"
+                stroke-width="3"
+              />
+            </svg>
+          </div>
+          <div class="wheel-frame">
+            <canvas id="wheelCanvas" width="520" height="520" aria-label="Roda pilihan topik obrolan"></canvas>
+            <button
+              id="centerSpinBtn"
+              class="wheel-center-btn"
+              type="button"
+              aria-label="Putar Roda"
+              title="Putar Roda"
+            >
+              <span>PUTAR</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="wheel-controls">
+          <button id="spinBtn" class="btn-primary btn-spin" type="button">
+            <span>🎯 Putar Roda</span>
+          </button>
+          <p class="shortcut-hint">
+            Tekan <kbd>Spasi</kbd> untuk memutar &bull; <span id="activeCountText">0 topik aktif</span>
+          </p>
+        </div>
+      </section>
+
+      <!-- Right: Result Card Section -->
+      <section class="result-section" aria-live="polite" aria-label="Hasil Topik Obrolan">
+        <!-- Empty / Initial State -->
+        <div id="resultPlaceholder" class="result-card result-placeholder">
+          <div class="placeholder-emoji" aria-hidden="true">💬</div>
+          <h2>Siap mulai obrolan?</h2>
+          <p>
+            Pilih suasana obrolan di atas, lalu tekan <strong>Putar Roda</strong> atau tombol
+            <kbd>Spasi</kbd> untuk mendapatkan pertanyaan pembuka beserta lanjutan obrolannya.
+          </p>
+          <div class="quick-tips">
+            <div class="tip-item">
+              <span class="tip-dot" style="background: #2A9D8F;"></span>
+              <span><strong>Santai:</strong> ringan buat teman kerja atau nongkrong</span>
+            </div>
+            <div class="tip-item">
+              <span class="tip-dot" style="background: #F4A261;"></span>
+              <span><strong>Kenalan Baru:</strong> cairkan suasana tanpa canggung</span>
+            </div>
+            <div class="tip-item">
+              <span class="tip-dot" style="background: #8E5572;"></span>
+              <span><strong>Reflektif:</strong> pancing cerita &amp; pengalaman personal</span>
+            </div>
+            <div class="tip-item">
+              <span class="tip-dot" style="background: #E05D44;"></span>
+              <span><strong>Imajinatif:</strong> obrolan seru penuh tawa</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Result State -->
+        <article id="resultCard" class="result-card hidden">
+          <div class="result-header">
+            <span id="resultCategoryBadge" class="category-badge">Kategori</span>
+            <span class="result-tag">Topik Terpilih</span>
+          </div>
+
+          <h2 id="resultQuestion" class="result-question">
+            Pertanyaan utama akan muncul di sini.
+          </h2>
+
+          <div class="followup-box">
+            <div class="followup-label">
+              <span aria-hidden="true">💡</span>
+              <span>Pertanyaan Lanjutan</span>
+            </div>
+            <p id="resultFollowup" class="followup-text">
+              Pertanyaan lanjutan akan muncul di sini.
+            </p>
+          </div>
+
+          <div class="result-actions">
+            <button id="respinBtn" class="btn-primary" type="button">
+              <span>🔄 Putar Ulang</span>
+            </button>
+            <button id="copyBtn" class="btn-secondary" type="button">
+              <span>📋 Salin Topik</span>
+            </button>
+            <button id="favoriteBtn" class="btn-secondary" type="button" aria-pressed="false">
+              <span id="favoriteIcon">🤍</span>
+              <span id="favoriteText">Simpan Favorit</span>
+            </button>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal: Kelola Topik -->
+  <div id="manageModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="manageModalTitle">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="manageModalTitle">Kelola Topik Obrolan</h2>
+          <p class="modal-subtitle">Tambah pertanyaan sendiri atau hapus topik yang kurang cocok.</p>
+        </div>
+        <button class="modal-close" data-close-modal="manageModal" type="button" aria-label="Tutup modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Add Topic Form -->
+        <form id="addTopicForm" class="add-topic-form">
+          <h3>Tambah Topik Baru</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="newTopicCategory">Kategori</label>
+              <select id="newTopicCategory" required>
+                <option value="santai">Santai &amp; Sehari-hari</option>
+                <option value="kenalan">Kenalan Baru (Icebreaker)</option>
+                <option value="reflektif">Reflektif &amp; Cerita</option>
+                <option value="imajinatif">Seru &amp; Imajinatif</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="newTopicQuestion">Pertanyaan Pembuka</label>
+            <textarea
+              id="newTopicQuestion"
+              rows="2"
+              placeholder="Contoh: Makanan apa yang paling bikin kamu kangen masa kecil?"
+              required
+              maxlength="220"
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label for="newTopicFollowup">Pertanyaan Lanjutan <span class="optional-label">(opsional)</span></label>
+            <input
+              id="newTopicFollowup"
+              type="text"
+              placeholder="Contoh: Biasanya dulu beli di mana atau siapa yang sering bikin?"
+              maxlength="220"
+            />
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">+ Tambah ke Roda</button>
+          </div>
+        </form>
+
+        <!-- Topic List -->
+        <div class="manage-list-header">
+          <div class="manage-filter-wrap">
+            <label for="manageCategoryFilter" class="sr-only">Filter daftar topik</label>
+            <select id="manageCategoryFilter">
+              <option value="all">Semua Kategori</option>
+              <option value="santai">Santai &amp; Sehari-hari</option>
+              <option value="kenalan">Kenalan Baru (Icebreaker)</option>
+              <option value="reflektif">Reflektif &amp; Cerita</option>
+              <option value="imajinatif">Seru &amp; Imajinatif</option>
+            </select>
+          </div>
+          <button id="resetTopicsBtn" class="btn-danger-outline" type="button">
+            Reset ke Bawaan
+          </button>
+        </div>
+
+        <ul id="manageTopicList" class="topic-list">
+          <!-- Populated by JS -->
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Favorit & Riwayat -->
+  <div id="savedModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="savedModalTitle">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div>
+          <h2 id="savedModalTitle">Favorit &amp; Riwayat</h2>
+          <p class="modal-subtitle">Simpan topik andalanmu atau lihat pertanyaan yang baru diputar.</p>
+        </div>
+        <button class="modal-close" data-close-modal="savedModal" type="button" aria-label="Tutup modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="tabs-bar" role="tablist">
+          <button id="tabFavorites" class="tab-btn active" type="button" role="tab" aria-selected="true">
+            ❤️ Favorit (<span id="favTabCount">0</span>)
+          </button>
+          <button id="tabHistory" class="tab-btn" type="button" role="tab" aria-selected="false">
+            🕒 Riwayat (<span id="histTabCount">0</span>)
+          </button>
+        </div>
+
+        <div id="favoritesPane" class="tab-pane">
+          <ul id="favoritesList" class="topic-list"></ul>
+        </div>
+
+        <div id="historyPane" class="tab-pane hidden">
+          <div class="history-toolbar">
+            <span class="history-note">Menampilkan maksimal 30 putaran terakhir</span>
+            <button id="clearHistoryBtn" class="btn-danger-outline" type="button">Hapus Riwayat</button>
+          </div>
+          <ul id="historyList" class="topic-list"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
